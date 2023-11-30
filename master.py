@@ -1,0 +1,30 @@
+import socket
+import time
+
+# Define the server (master) address and port
+master_address = '127.0.0.1'
+master_port = 12345
+
+# Create a socket object
+master_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Bind the socket to the address and port
+master_socket.bind((master_address, master_port))
+
+# Listen for incoming connections (1 connection at a time)
+master_socket.listen(1)
+
+print(f"Master is listening on {master_address}:{master_port}")
+
+# Accept a connection from a slave
+slave_socket, slave_address = master_socket.accept()
+print(f"Connected to slave at {slave_address}")
+
+# Send the number 1 to the slave
+number_to_send = 1
+slave_socket.sendall(str(number_to_send).encode())
+print("Sent number 1 to the slave.")
+
+# Close the connection
+slave_socket.close()
+master_socket.close()

@@ -62,7 +62,6 @@ class VisionProcessing:
             if cv.waitKey(1) == ord('q'):
                 break
 
-
         # Release the camera and close all OpenCV windows
         cap.release()
         cv.destroyAllWindows()
