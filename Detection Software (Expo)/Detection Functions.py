@@ -6,17 +6,18 @@ def get_CircleBin():
     """Reads a variable stored in a .txt file
 
     Returns:
-        The variable in the textfile
+        The variable in the .txt file
     """
-    # checks if the txt file exists
+    # Checks if the txt file exists
     if os.path.exists(CircleBin):
 
-        # opens the txt file in read only mode, meaning the file can only be read and not edited, thats what the "r" does
+        # Opens the txt file in read-only mode
         with open(CircleBin, "r") as file:
             
-            # turns the variable to an int
+            # Turns the variable into an int
             Circle = int(file.read())
-    # if there is no variable in the file return the variable as 0
+
+    # If there is no variable in the file, return the variable as 0
     else:
         Circle = 0
     return Circle
@@ -31,9 +32,7 @@ def update_Circle(amount):
         # writes it as a string version of the variable
         file.write(str(Circle))
 
-
-
-# using the function like this will make the variable permantantly 1
+# Using the function like this will make the variable permantantly 1
 Circle = get_CircleBin()
 
 # using the update function like this will make the circle value always 0
