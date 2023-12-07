@@ -28,8 +28,8 @@ class VisionProcessing:
 
     def make_decision(self, circle_center_x, frame_width):
         # Adjust this threshold based on your specific scenario
-        left_threshold = 0.4 * frame_width
-        right_threshold = 0.6 * frame_width
+        left_threshold = 0.45 * frame_width
+        right_threshold = 0.55 * frame_width
 
         # Make decisions based on the position of the detected circle
         if circle_center_x < left_threshold:
@@ -44,6 +44,10 @@ class VisionProcessing:
 
         # Open the default camera (camera index 0)
         cap = cv.VideoCapture(0)
+
+        # sets the capture to fill the screen
+        cv.namedWindow('Side-by-Side Capture', cv.WINDOW_NORMAL)
+        cv.setWindowProperty('Side-by-Side Capture', cv.WND_PROP_FULLSCREEN, cv.WINDOW_FULLSCREEN)
 
         # Vision processing loop
         while True:
@@ -75,15 +79,20 @@ class VisionProcessing:
             # Return whether circle(s) is detected (1 if yes, 0 otherwise)
             circle_detected_binary = self.detect_circles(circles, thresh_binary, frame)
 
-            # Display the frame with detected circles
-            cv.imshow('Video with Circles', thresh_binary)
+            # Resizes the thresholded capture for concatnating
+            thresh_binary_color = cv.cvtColor(thresh_binary, cv.COLOR_GRAY2BGR)
+                
+            # Concatenates the colour capture and the none colour capture
+            side_by_side_frame = np.hstack((frame, thresh_binary_color))
 
+            # Display the frames (left is RGB, right is greyscale)
+            cv.imshow('Side-by-Side Capture', side_by_side_frame)
+            
             # Exit the loop if the 'q' key is pressed
             if cv.waitKey(1) == ord('q'):
                 break
 
         print(circle_detected_binary)
-    
+
 vp = VisionProcessing()
 vp.camera_processing()
-print(vp.movement_direction)

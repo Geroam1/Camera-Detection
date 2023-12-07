@@ -15,7 +15,7 @@ slave_socket.connect((slave_address, slave_port))
 print(f"Connected to master at {slave_address}:{slave_port}")
 
 # Receive the number from the master
-print(f"Received number from master: {vp.camera_processing()}")
+print(f"Received number from master: {vp.camera_processing()} and {vp.movement_direction}")
 
 # Close the connection
 slave_socket.close()

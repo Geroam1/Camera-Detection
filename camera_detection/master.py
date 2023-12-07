@@ -3,6 +3,7 @@ from camera_detection import VisionProcessing
 
 vp = VisionProcessing()
 circle_binary = vp.camera_processing()
+movement = vp.movement_direction
 
 # Define the server (master) address and port
 master_address = '127.0.0.1'
@@ -25,7 +26,7 @@ print(f"Connected to slave at {slave_address}")
 
 # Send the number 1 to the slave
 slave_socket.sendall(str(circle_binary).encode())
-print(f"Sent {circle_binary} to the slave.")
+print(f"Sent pathway = {circle_binary} and direction = {movement} to the slave.")
 
 # Close the connection
 master_socket.close()
