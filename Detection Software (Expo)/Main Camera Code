@@ -51,20 +51,9 @@ while True:
     # ensures that at least one circle was found if a circle is found
     if circles is not None:
         circles = np.uint16(np.around(circles))
-        
-        # checks 100 times if a circle is there for sure
-        if ReactionCount < 100:
-            ReactionCount += 1
-            
-            # if the reactioncount reached 100 then a circle has been "found"
-            if ReactionCount == 100:
-                # print("Circle found for sure")
-                
-                # updates the binary circle value to 1
-                Circle = 1
-                cv.imshow('Image With Circle', thresh_binary)
-            else:
-                print(f"  Circle found, Reaction count = {ReactionCount}", end = '\r')
+    
+        # updates the binary circle value to 1
+        Circle = 1
                 
         for circle in circles[0, :]:
             # Extract the center and radius of the circle
@@ -73,7 +62,9 @@ while True:
             # Draw the circle on the original frame
             cv.circle(thresh_binary, (center_x, center_y), radius, (170, 255, 170), 2)
     
-    
+    else:
+        Circle = 0
+
     # resizes the thresholded capture for concatnating
     thresh_binary_color = cv.cvtColor(thresh_binary, cv.COLOR_GRAY2BGR)
         
