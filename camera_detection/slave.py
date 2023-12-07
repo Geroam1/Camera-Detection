@@ -1,4 +1,7 @@
 import socket
+from camera_detection import VisionProcessing
+
+vp = VisionProcessing()
 
 # Define the server (slave) address and port
 slave_address = '127.0.0.1'
@@ -12,9 +15,7 @@ slave_socket.connect((slave_address, slave_port))
 print(f"Connected to master at {slave_address}:{slave_port}")
 
 # Receive the number from the master
-received_data = slave_socket.recv(1024).decode()
-number_received = int(received_data)
-print(f"Received number from master: {number_received}")
+print(f"Received number from master: {vp.camera_processing()}")
 
 # Close the connection
 slave_socket.close()

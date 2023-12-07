@@ -1,5 +1,8 @@
 import socket
-import time
+from camera_detection import VisionProcessing
+
+vp = VisionProcessing()
+circle_binary = vp.camera_processing()
 
 # Define the server (master) address and port
 master_address = '127.0.0.1'
@@ -21,10 +24,8 @@ slave_socket, slave_address = master_socket.accept()
 print(f"Connected to slave at {slave_address}")
 
 # Send the number 1 to the slave
-number_to_send = 1
-slave_socket.sendall(str(number_to_send).encode())
-print("Sent number 1 to the slave.")
+slave_socket.sendall(str(circle_binary).encode())
+print(f"Sent {circle_binary} to the slave.")
 
 # Close the connection
-slave_socket.close()
 master_socket.close()

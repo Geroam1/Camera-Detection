@@ -21,23 +21,22 @@ class VisionProcessing:
         return circle_found
 
     def camera_processing(self):
-        # Circle Detection with video camera
+        # Circle Detection with a video camera
 
         # Open the default camera (camera index 0)
         cap = cv.VideoCapture(0)
 
+        # Vision processing loop
         while True:
+
             # Capture a frame from the camera
             ret, frame = cap.read()
             if not ret:
                 break
 
-            # Capture a frame from the camera
-            ret, frame = cap.read()
-
             # Convert the frame to grayscale
             gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-            ret,thresh_binary = cv.threshold(gray,127,255,cv.THRESH_BINARY)
+            ret, thresh_binary = cv.threshold(gray, 127, 255, cv.THRESH_BINARY)
 
             # Apply Gaussian blur to reduce noise
             blurred = cv.GaussianBlur(thresh_binary, (9, 9), 2)
@@ -54,7 +53,9 @@ class VisionProcessing:
                 maxRadius=100  # Adjust the maximum radius of the circles you want to detect
             )
 
-            cir = self.detect_circles(circles, thresh_binary)
+            # Return whether circle(s) is detected (1 if yes, 0 otherwise)
+            circle_detected_binary = self.detect_circles(circles, thresh_binary)
+
             # Display the frame with detected circles
             cv.imshow('Video with Circles', thresh_binary)
 
@@ -62,9 +63,11 @@ class VisionProcessing:
             if cv.waitKey(1) == ord('q'):
                 break
 
-        # Release the camera and close all OpenCV windows
-        cap.release()
-        cv.destroyAllWindows()
+            # Release the camera and close all OpenCV windows
+            cap.release()
+            cv.destroyAllWindows()
 
-        return cir
+        return circle_detected_binary
     
+vp = VisionProcessing()
+vp.camera_processing()
