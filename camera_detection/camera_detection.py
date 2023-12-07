@@ -36,7 +36,7 @@ class VisionProcessing:
 
             # Convert the frame to grayscale
             gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-            ret, thresh_binary = cv.threshold(gray, 127, 255, cv.THRESH_BINARY)
+            ret, thresh_binary = cv.threshold(gray, 125, 255, cv.THRESH_BINARY)
 
             # Apply Gaussian blur to reduce noise
             blurred = cv.GaussianBlur(thresh_binary, (9, 9), 2)
@@ -46,8 +46,8 @@ class VisionProcessing:
                 blurred,
                 cv.HOUGH_GRADIENT,
                 dp=1,
-                minDist=100,  # Adjust the minimum distance between circles
-                param1=50,
+                minDist=60,  # Adjust the minimum distance between circles
+                param1=10,
                 param2=30,   # Adjust this threshold for circle detection
                 minRadius=0,
                 maxRadius=100  # Adjust the maximum radius of the circles you want to detect
@@ -63,11 +63,7 @@ class VisionProcessing:
             if cv.waitKey(1) == ord('q'):
                 break
 
-            # Release the camera and close all OpenCV windows
-            cap.release()
-            cv.destroyAllWindows()
-
-        return circle_detected_binary
+        print(circle_detected_binary)
     
 vp = VisionProcessing()
 vp.camera_processing()
