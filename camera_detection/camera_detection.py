@@ -3,7 +3,9 @@ import cv2 as cv
 
 class VisionProcessing:
 
-    def detect_circles(self, circles, thresh_binary):
+    movement_direction = ''
+
+    def detect_circles(self, circles, thresh_binary, frame):
         # Ensure that at least one circle was found
         if circles is not None:
             circles = np.uint16(np.around(circles))
@@ -15,11 +17,28 @@ class VisionProcessing:
 
                 # Draw the circle on the original frame
                 cv.circle(thresh_binary, (center_x, center_y), radius, (0, 255, 0), 2)
+
+                # Check the position of the detected circle and make decisions
+                self.movement_direction = self.make_decision(center_x, frame.shape[1])
+
         else:
             circle_found = 0
 
         return circle_found
 
+    def make_decision(self, circle_center_x, frame_width):
+        # Adjust this threshold based on your specific scenario
+        left_threshold = 0.4 * frame_width
+        right_threshold = 0.6 * frame_width
+
+        # Make decisions based on the position of the detected circle
+        if circle_center_x < left_threshold:
+            return ('Left')
+        elif circle_center_x > right_threshold:
+            return ('Right')
+        else:
+            return ('Straight')
+        
     def camera_processing(self):
         # Circle Detection with a video camera
 
@@ -46,15 +65,15 @@ class VisionProcessing:
                 blurred,
                 cv.HOUGH_GRADIENT,
                 dp=1,
-                minDist=60,  # Adjust the minimum distance between circles
-                param1=10,
-                param2=30,   # Adjust this threshold for circle detection
+                minDist=100,  # Adjust the minimum distance between circles
+                param1=10, # Adjust the sensitivity
+                param2=30,   # Adjust the accuracy for circle detection
                 minRadius=0,
                 maxRadius=100  # Adjust the maximum radius of the circles you want to detect
             )
 
             # Return whether circle(s) is detected (1 if yes, 0 otherwise)
-            circle_detected_binary = self.detect_circles(circles, thresh_binary)
+            circle_detected_binary = self.detect_circles(circles, thresh_binary, frame)
 
             # Display the frame with detected circles
             cv.imshow('Video with Circles', thresh_binary)
@@ -67,3 +86,4 @@ class VisionProcessing:
     
 vp = VisionProcessing()
 vp.camera_processing()
+print(vp.movement_direction)
