@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 
 class VisionProcessing:
-
+    
     movement_direction = ''
 
     def detect_circles(self, circles, thresh_binary, frame):
@@ -19,26 +19,35 @@ class VisionProcessing:
                 cv.circle(thresh_binary, (center_x, center_y), radius, (0, 255, 0), 2)
 
                 # Check the position of the detected circle and make decisions
-                self.movement_direction = self.make_decision(center_x, frame.shape[1])
+                self.movement_direction = self.make_decision(center_x, frame.shape[1], frame.shape[0])
+                print(f'  {self.movement_direction}     ', end = '\r')
 
         else:
             circle_found = 0
 
         return circle_found
-
-    def make_decision(self, circle_center_x, frame_width):
+    
+    def make_decision(self, circle_center_x, frame_width, frame_length):
         # Adjust this threshold based on your specific scenario
         left_threshold = 0.45 * frame_width
         right_threshold = 0.55 * frame_width
-
+        
+        down_threshold = 0.45 * frame_length
+        up_threshold = 0.55 * frame_length
+        
+        
         # Make decisions based on the position of the detected circle
         if circle_center_x < left_threshold:
             return ('Left')
         elif circle_center_x > right_threshold:
             return ('Right')
-        else:
-            return ('Straight')
-        
+        elif circle_center_x < down_threshold:
+            return ('Down')
+        elif circle_center_x > up_threshold:
+            return ('Up')
+        else:   
+            return ('Forward')
+       
     def camera_processing(self):
         # Circle Detection with a video camera
 
@@ -59,7 +68,7 @@ class VisionProcessing:
 
             # Convert the frame to grayscale
             gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-            ret, thresh_binary = cv.threshold(gray, 125, 255, cv.THRESH_BINARY)
+            ret, thresh_binary = cv.threshold(gray, 128, 255, cv.THRESH_BINARY)
 
             # Apply Gaussian blur to reduce noise
             blurred = cv.GaussianBlur(thresh_binary, (9, 9), 2)
@@ -95,4 +104,6 @@ class VisionProcessing:
         return circle_detected_binary
 
 vp = VisionProcessing()
-vp.camera_processing()
+print(vp.camera_processing())
+
+print(vp.movement_direction)
