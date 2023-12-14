@@ -92,7 +92,7 @@ class VisionProcessing:
             if cv.waitKey(1) == ord('q'):
                 break
 
-        print(circle_detected_binary)
+        return circle_detected_binary
 
 vp = VisionProcessing()
 vp.camera_processing()

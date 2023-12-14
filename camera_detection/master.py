@@ -24,7 +24,7 @@ print(f"Master is listening on {master_address}:{master_port}")
 slave_socket, slave_address = master_socket.accept()
 print(f"Connected to slave at {slave_address}")
 
-# Send the number 1 to the slave
+# Send the output to the slave
 slave_socket.sendall(str(circle_binary).encode())
 print(f"Sent pathway = {circle_binary} and direction = {movement} to the slave.")
 
