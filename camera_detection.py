@@ -54,7 +54,7 @@ class VisionProcessing:
        
         return x_direction, y_direction
     
-    def camera_processing(self):
+    def camera_processing(self, frame):
         # Circle Detection with a video camera
 
         # Open the default camera (camera index 0)
@@ -63,10 +63,10 @@ class VisionProcessing:
         # Vision processing loop
         while True:
 
-            # Capture a frame from the camera
-            ret, frame = cap.read()
-            if not ret:
-                break
+            # # Capture a frame from the camera
+            # ret, frame = cap.read()
+            # if not ret:
+            #     break
 
             gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
             ret, thresh_binary = cv.threshold(gray, 125, 255, cv.THRESH_BINARY)
@@ -99,6 +99,3 @@ class VisionProcessing:
             output = [circle_detected_binary, self.movement_direction]
 
         return output
-    
-vp = VisionProcessing()
-vp.camera_processing()
