@@ -23,35 +23,37 @@ class VisionProcessing:
 
                 # Check the position of the detected circle and make decisions
                 height, width = frame.shape[0], frame.shape[1]
-                self.movement_direction = self.make_decision(center_x, width, height)
+                self.movement_direction = self.make_decision(center_x, center_y, width, height)
 
         return circle_found
 
-    def make_decision(self, circle_center, frame_width, frame_height):
-        # Adjust this threshold based on your specific scenario
-        left_threshold = 0.4 * frame_width
-        right_threshold = 0.6 * frame_width
-        up_threshold = 0.3 * frame_height
-        down_threshold = 0.7 * frame_height
+    def make_decision(self, circle_center_x, circle_center_y, frame_width, frame_height):
+        # Define the threshold
+        straight_threshold = 100
+        left_threshold = (frame_width / 2) - straight_threshold
+        right_threshold = (frame_width / 2) + straight_threshold
+        up_threshold = (frame_height / 2) - straight_threshold
+        down_threshold = (frame_height / 2) + straight_threshold
 
         x_direction = ''
         y_direction = ''
-        # Compare the intensities and determine the direction
-        if circle_center < left_threshold:
+        # Check where the circle(s) is found and determine the direction
+        if circle_center_x < left_threshold:
             x_direction = 'Left'
-        elif circle_center > right_threshold:
+        elif circle_center_x > right_threshold:
             x_direction = 'Right'
-        elif circle_center > left_threshold and circle_center < right_threshold:
+        elif circle_center_x > left_threshold and circle_center_x < right_threshold:
             x_direction = 'Straight'
         
-        if circle_center > down_threshold:
+        if circle_center_y > down_threshold:
             y_direction =  'Down'
-        elif circle_center < up_threshold:
+        elif circle_center_y < up_threshold:
             y_direction = 'Up'
-        elif circle_center > up_threshold and circle_center < down_threshold:
+        elif circle_center_y > up_threshold and circle_center_y < down_threshold:
             y_direction = 'Straight'
        
         return x_direction, y_direction
+    
     def camera_processing(self):
         # Circle Detection with a video camera
 
@@ -66,9 +68,8 @@ class VisionProcessing:
             if not ret:
                 break
 
-            # Convert the frame to grayscale and apply binary thresholding
             gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-            ret, thresh_binary = cv.threshold(gray, 128, 255, cv.THRESH_BINARY)
+            ret, thresh_binary = cv.threshold(gray, 125, 255, cv.THRESH_BINARY)
 
             # Apply Gaussian blur to reduce noise
             blurred = cv.GaussianBlur(thresh_binary, (9, 9), 2)
@@ -87,7 +88,7 @@ class VisionProcessing:
 
             # Return whether circle(s) is detected (1 if yes, 0 otherwise)
             circle_detected_binary = self.detect_circles(circles, thresh_binary, frame)
-
+            print(vp.movement_direction)
             # Display the frame with detected circles
             cv.imshow('Video with Circles', thresh_binary)
 
@@ -95,8 +96,9 @@ class VisionProcessing:
             if cv.waitKey(1) == ord('q'):
                 break
 
-        print(circle_detected_binary)
+            output = [circle_detected_binary, self.movement_direction]
+
+        return output
     
 vp = VisionProcessing()
 vp.camera_processing()
-print(vp.movement_direction)
